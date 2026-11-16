@@ -1,0 +1,121 @@
+/* Nashoba Power Wash: refinements loaded after style.css */
+
+/* Headings: logo-style lettering stays on the hero, brand name and page titles only */
+h2, h3 { font-style: normal; text-transform: none; font-weight: 700; letter-spacing: .005em; }
+h2 { font-size: clamp(1.8rem, 3.6vw, 2.35rem); }
+h3 { font-size: 1.35rem; }
+.band h2, .how h2, .why h2, .gallery h2, .area h2 { text-align: left; }
+
+/* Buttons: same blue gradient and dark outline, less bubbly */
+.btn, .form-submit, .form-next, .form-back { border-radius: 10px; border-width: 2px; font-style: normal; letter-spacing: .03em; }
+.btn { box-shadow: 0 3px 0 var(--ink); }
+.btn:hover { box-shadow: 0 1px 0 var(--ink); }
+.btn-small { box-shadow: 0 2px 0 var(--ink); }
+.form-submit, .form-next { box-shadow: 0 3px 0 var(--ink); }
+
+/* Hero: left-aligned copy, logo on the right */
+.hero { text-align: left; padding: 3rem 0 6.5rem; }
+.hero-inner { display: grid; grid-template-columns: 1.5fr 1fr; gap: 32px; align-items: center; }
+.hero-copy { order: 1; }
+.hero-logo { order: 2; margin: 0 auto; width: min(320px, 70vw); }
+.hero-title { margin: 0; font-size: clamp(2.5rem, 6.2vw, 4.4rem); -webkit-text-stroke: 6px var(--ink); }
+.hero-sub { max-width: 34rem; margin: 1.1rem 0 0; font-size: 1.1rem; }
+.hero .cta-row { justify-content: flex-start; margin-top: 1.5rem; }
+.hero-note { margin: 1.1rem 0 0; font-weight: 600; color: var(--navy); }
+
+.page-hero { text-align: left; }
+
+/* Services on the navy band: ruled rows instead of boxed cards */
+.band { padding: 3rem 0 4.25rem; }
+.band .cards { display: block; border-top: 1px solid rgba(255,255,255,.3); }
+.band .card { display: grid; grid-template-columns: minmax(200px, 1fr) 2fr; gap: 6px 28px; align-items: baseline; background: transparent; color: #fff; border: 0; border-bottom: 1px solid rgba(255,255,255,.3); border-radius: 0; box-shadow: none; padding: 1.1rem .5rem; }
+.band .card h3 { color: #fff; margin: 0; font-size: 1.55rem; }
+.band .card p { margin: 0; color: #d6e2f7; }
+.band a.card:hover { background: rgba(255,255,255,.08); transform: none; border-color: rgba(255,255,255,.3); }
+.band .card-cta { background: transparent; }
+
+.tag { display: block; margin: 0 0 .15rem; padding: 0; background: none; color: var(--royal); font-size: .72rem; font-weight: 700; font-style: normal; letter-spacing: .14em; text-transform: uppercase; }
+.band .tag { color: var(--ice); }
+
+/* "How we work": plain columns with a top rule */
+.why { padding: 3rem 0 3.5rem; }
+.why .cards { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 28px 40px; }
+.why .card { background: none; border: 0; border-top: 3px solid var(--navy); border-radius: 0; box-shadow: none; padding: .9rem 0 0; }
+.why .card h3 { margin-bottom: .3rem; }
+
+/* Steps */
+.steps li > span { background: var(--navy); border: 0; text-shadow: none; }
+
+/* Service area */
+.area { padding: 2.75rem 0; background: var(--mist); text-align: left; }
+.area p { max-width: 44rem; margin: 0 0 .8rem; }
+.towns-text { font-weight: 600; color: var(--navy); font-size: 1.1rem; }
+
+/* Gallery */
+.gallery figure { border: 1px solid var(--ice); border-radius: 8px; }
+.gallery-grid figure:first-child { grid-column: 1 / -1; }
+.gallery-grid figure:first-child figcaption { font-size: 1.15rem; }
+.shot { position: relative; }
+.shot-label { position: absolute; left: 10px; top: 10px; background: var(--ink); color: #fff; font-weight: 700; text-transform: uppercase; font-size: .72rem; letter-spacing: .08em; padding: .15rem .65rem; border-radius: 6px; }
+
+/* Services page */
+.service { padding: 1.6rem 0; border-top: 1px solid var(--ice); }
+.service:first-of-type { border-top: 0; padding-top: 0; }
+.service h2 { margin-top: 0; }
+.service .meta { margin: .25rem 0 0; font-weight: 700; color: var(--royal); }
+.service-feature { background: var(--mist); border: 0; border-left: 6px solid var(--navy); border-radius: 4px; padding: 1.4rem 1.4rem 1.6rem; margin-bottom: 1rem; box-shadow: none; }
+.service-feature + .service { border-top: 0; }
+
+/* FAQ: ruled rows instead of boxes */
+.faq { border: 0; border-bottom: 1px solid var(--ice); border-radius: 0; padding: 1.05rem 0; margin: 0; background: none; }
+.faq:first-of-type { border-top: 1px solid var(--ice); }
+.faq summary { font-size: 1.05rem; }
+
+/* Quote page */
+.form-card { border: 1px solid #9fb0d3; border-radius: 12px; box-shadow: 0 8px 24px rgba(22,45,120,.10); }
+.how-aside { border-radius: 12px; }
+.how-aside h3 { margin-top: 0; }
+.aside-list { padding-left: 1.2rem; margin: .5rem 0 1.25rem; }
+.aside-list li { margin-bottom: .4rem; }
+
+/* Footer and misc */
+.foot-area { margin: 0 0 .5rem; color: #9fb0d3; }
+.lead { font-size: 1.1rem; }
+
+@media (max-width: 800px) {
+  .hero-inner { grid-template-columns: 1fr; gap: 18px; }
+  .hero-logo { order: 0; width: 170px; margin: 0; }
+  .hero-copy { order: 1; }
+  .band .card { grid-template-columns: 1fr; padding: 1rem .25rem; }
+}
+
+/* ===== New transparent wordmark logo ===== */
+
+/* Header: wide wordmark instead of the old square badge */
+.brand img { width: auto; height: 52px; display: block; }
+
+/* About page */
+.about-logo { height: auto; }
+
+/* Home hero: the logo floats and drifts gently */
+.hero-logo {
+  width: min(100%, 460px);
+  height: auto;
+  margin: 0 auto;
+  will-change: transform;
+  animation: npw-float 9s ease-in-out infinite;
+}
+@keyframes npw-float {
+  0%   { transform: translate3d(0, 0, 0) rotate(-1.5deg); }
+  20%  { transform: translate3d(12px, -14px, 0) rotate(0.5deg); }
+  40%  { transform: translate3d(18px, -26px, 0) rotate(2deg); }
+  60%  { transform: translate3d(-6px, -18px, 0) rotate(1deg); }
+  80%  { transform: translate3d(-16px, -6px, 0) rotate(-1deg); }
+  100% { transform: translate3d(0, 0, 0) rotate(-1.5deg); }
+}
+@media (max-width: 800px) {
+  .hero-logo { width: min(80vw, 320px); margin: 0 auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-logo { animation: none; }
+}

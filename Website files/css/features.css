@@ -1,0 +1,102 @@
+/* Nashoba Power Wash: interactive house, before/after slider, gallery, scheduling. Loaded after extra.css. */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+.gallery-tabs[hidden], .pick-other[hidden], .sched-form[hidden], .sched-done[hidden], .sched-picker[hidden], .picks[hidden], .gallery-empty[hidden], .gallery-note[hidden], .gallery-more[hidden] { display: none; }
+
+/* Interactive house */
+.house-section { padding: 3.25rem 0; }
+.house-section h2 { text-align: left; margin: 0 0 .4rem; }
+.house-lead { max-width: 40rem; margin: 0 0 1.5rem; }
+.house-grid { display: grid; grid-template-columns: 1.55fr 1fr; gap: 28px; align-items: start; }
+
+.holo { position: relative; border-radius: 14px; overflow: hidden; border: 2px solid var(--ink); background: radial-gradient(ellipse at 50% 100%, rgba(91,139,215,.38), rgba(8,10,21,0) 62%), linear-gradient(180deg, #091238 0%, #0e1f5e 100%); box-shadow: inset 0 0 70px rgba(91,139,215,.25); }
+.holo::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(180deg, rgba(205,217,235,.05) 0 1px, transparent 1px 4px); }
+.holo svg { display: block; width: 100%; height: auto; }
+.holo-hint { position: absolute; left: 14px; bottom: 12px; margin: 0; z-index: 1; pointer-events: none; font-size: .78rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #9db8e6; }
+
+.holo .house-static { fill: none; stroke: #5b8bd7; stroke-opacity: .4; stroke-width: 1.5; pointer-events: none; }
+.holo .pane { fill: #0b1850; fill-opacity: .92; stroke: #5b8bd7; stroke-opacity: .5; stroke-width: 1.5; pointer-events: none; }
+.holo .scan { animation: holoscan 6s linear infinite; pointer-events: none; }
+@keyframes holoscan { from { transform: translateY(-60px); } to { transform: translateY(540px); } }
+
+.holo .part { cursor: pointer; outline: none; }
+.holo .part .shape { fill: rgba(91,139,215,.12); stroke: #7fa6e6; stroke-opacity: .8; stroke-width: 2; transition: fill .2s ease, stroke .2s ease; }
+.holo .part .lines { fill: none; stroke: #7fa6e6; stroke-opacity: .5; stroke-width: 1.3; pointer-events: none; }
+.holo .part .tag { fill: #a9c1ea; font: 700 19px Inter, sans-serif; letter-spacing: .14em; text-anchor: middle; paint-order: stroke; stroke: #0b1850; stroke-width: 4px; pointer-events: none; }
+.holo .part:hover .shape, .holo .part:focus-visible .shape { fill: rgba(205,217,235,.25); stroke: #cdd9eb; }
+.holo .part:focus-visible .shape { stroke-dasharray: 7 5; }
+.holo .part.on .shape { fill: rgba(205,217,235,.46); stroke: #fff; stroke-width: 2.5; stroke-opacity: 1; filter: url(#holoGlow); }
+.holo .part.on .lines { stroke: #fff; stroke-opacity: .85; }
+.holo .part.on .tag { fill: #fff; }
+
+.house-side h3 { margin: 0 0 .6rem; }
+.pick-list { border-top: 1px solid var(--ice); margin: 0 0 .9rem; }
+.pick { display: flex; align-items: center; gap: .75rem; padding: .8rem .25rem; border-bottom: 1px solid var(--ice); font-weight: 600; cursor: pointer; }
+.pick input { width: 1.25rem; height: 1.25rem; accent-color: var(--navy); flex: none; }
+.pick small { display: block; font-weight: 400; color: #4a5878; }
+.pick-other { display: block; margin: 0 0 .9rem; }
+.pick-other input { width: 100%; padding: .6rem .7rem; border: 1px solid #9fb0d3; border-radius: 8px; font: inherit; }
+.house-summary { min-height: 1.5rem; margin: 0 0 .9rem; font-weight: 600; color: var(--navy); }
+.house-actions { display: flex; flex-wrap: wrap; gap: .75rem; }
+.house-note { margin: .9rem 0 0; font-size: .9rem; color: #4a5878; }
+
+/* Quote page: what the visitor picked on the house */
+.picks { margin: 0 0 1.25rem; padding: 1rem 1.1rem; background: var(--mist); border-left: 6px solid var(--navy); border-radius: 4px; }
+.picks h3 { margin: 0 0 .3rem; }
+.picks p { margin: .25rem 0 .6rem; }
+.picks ul { margin: .3rem 0 .8rem; padding-left: 1.2rem; }
+.picks-row { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; }
+.picks-text { flex: 1 1 220px; padding: .5rem .6rem; border: 1px solid #9fb0d3; border-radius: 6px; background: #fff; font: inherit; font-size: .9rem; }
+.picks-edit { font-weight: 600; }
+
+/* Before / after slider */
+.ba { position: relative; overflow: hidden; border: 1px solid var(--ice); border-radius: 8px; background: var(--ink); --pos: 50%; touch-action: pan-y; }
+.ba img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; pointer-events: none; user-select: none; }
+.ba .ba-before { position: absolute; inset: 0; clip-path: inset(0 calc(100% - var(--pos)) 0 0); }
+.ba-line { position: absolute; top: 0; bottom: 0; left: var(--pos); width: 3px; margin-left: -1.5px; background: #fff; box-shadow: 0 0 0 1px rgba(8,10,21,.45); pointer-events: none; }
+.ba-knob { position: absolute; top: 50%; left: var(--pos); width: 46px; height: 46px; margin: -23px 0 0 -23px; border-radius: 50%; background: #fff; border: 2px solid var(--ink); box-shadow: 0 2px 0 var(--ink); display: grid; place-items: center; pointer-events: none; }
+.ba-range { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: ew-resize; -webkit-appearance: none; appearance: none; touch-action: pan-y; }
+.ba:focus-within .ba-knob { outline: 3px solid var(--sky); outline-offset: 2px; }
+.ba-tag { position: absolute; top: 10px; padding: .15rem .65rem; border-radius: 6px; background: var(--ink); color: #fff; font-size: .72rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; pointer-events: none; }
+.ba-tag-before { left: 10px; }
+.ba-tag-after { right: 10px; }
+
+/* Gallery */
+.ba-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 28px; }
+.ba-grid figure { margin: 0; }
+.ba-grid figure.featured { grid-column: 1 / -1; }
+.ba-grid figcaption { margin: .55rem 0 0; font-weight: 600; color: var(--navy); }
+.gallery-tabs { display: flex; flex-wrap: wrap; gap: 1.4rem; margin: 0 0 1.5rem; border-bottom: 1px solid var(--ice); }
+.gallery-tabs button { appearance: none; background: none; border: 0; border-bottom: 3px solid transparent; margin-bottom: -1px; padding: .6rem 0; font: inherit; font-weight: 700; color: var(--royal); cursor: pointer; }
+.gallery-tabs button[aria-pressed="true"] { color: var(--navy); border-bottom-color: var(--navy); }
+.gallery-empty { max-width: 40rem; padding: 1.5rem 1.6rem; background: var(--mist); border-left: 6px solid var(--navy); border-radius: 4px; }
+.gallery-empty h2 { margin-top: 0; }
+.gallery-note { margin: 1rem 0 0; font-size: .85rem; color: #4a5878; }
+.gallery-more { margin: 1.5rem 0 0; font-weight: 600; }
+
+/* Scheduling */
+.sched-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 32px; align-items: start; }
+.sched h2 { margin: 0 0 .3rem; }
+.sched-meta { margin: 0 0 .6rem; font-weight: 700; color: var(--royal); }
+.sched-desc { margin: 0 0 1.5rem; }
+.sched-picker h3, .sched-form h3 { margin: 0 0 .7rem; }
+.week-nav { display: flex; align-items: center; justify-content: space-between; gap: .75rem; margin: 0 0 .9rem; }
+.week-label { font-weight: 700; color: var(--navy); }
+.week-nav button, .day, .slot { appearance: none; background: #fff; color: var(--navy); border: 2px solid #9fb0d3; border-radius: 8px; padding: .5rem .85rem; font: inherit; font-weight: 600; cursor: pointer; }
+.week-nav button[disabled], .slot[disabled] { opacity: .45; cursor: not-allowed; }
+.days, .slots { display: flex; flex-wrap: wrap; gap: .5rem; margin: 0 0 1rem; }
+.day[aria-pressed="true"], .slot[aria-pressed="true"] { background: var(--navy); color: #fff; border-color: var(--navy); }
+.sched-status { margin: .5rem 0 1rem; font-weight: 600; }
+.sched-tz { margin: 0 0 1.5rem; font-size: .85rem; color: #4a5878; }
+.sched-form { margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--ice); }
+.sched-form .form-field { margin-bottom: 14px; }
+.sched-picked { margin: 0 0 1rem; font-weight: 700; color: var(--navy); }
+.sched-done, .sched-note { padding: 1.25rem 1.4rem; background: var(--mist); border-left: 6px solid var(--navy); border-radius: 4px; }
+.sched-done h3, .sched-note h2 { margin-top: 0; }
+
+@media (max-width: 860px) {
+  .house-grid, .sched-grid { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .holo .scan { animation: none; opacity: 0; }
+  .holo .part .shape { transition: none; }
+}
