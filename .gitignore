@@ -4,3 +4,4 @@ dist
 .DS_Store
 # raw, full-size job photos stay out of git (they contain customer names)
 Before and afters/
+*.tsbuildinfo

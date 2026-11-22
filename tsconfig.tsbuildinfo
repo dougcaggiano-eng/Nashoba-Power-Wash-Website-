@@ -1,1 +1,0 @@
-{"root":["./src/App.tsx","./src/main.tsx","./src/vite-env.d.ts","./src/components/BeforeAfterSlider.tsx","./src/components/HouseModel.tsx","./src/components/HouseScene.tsx","./src/components/HouseSection.tsx","./src/components/PartPicker.tsx","./src/components/QuoteForm.tsx","./src/components/ServiceProcess.tsx","./src/data/services.ts","./src/lib/store.ts"],"version":"5.6.3"}
