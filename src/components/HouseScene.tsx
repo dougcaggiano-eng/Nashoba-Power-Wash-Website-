@@ -117,7 +117,7 @@ function Spray() {
 function useGlbUrl() {
   const [url, setUrl] = useState<string | null>(null);
   useEffect(() => {
-    const u = '/models/house.glb';
+    const u = 'models/house.glb';
     fetch(u, { method: 'HEAD' })
       .then((r) => {
         const type = r.headers.get('content-type') ?? '';

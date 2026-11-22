@@ -7,7 +7,7 @@ function Header() {
   return (
     <header className="site-header">
       <a href="#top" className="brand" aria-label="Nashoba Power Wash, home">
-        <img src="/logo.webp" alt="Nashoba Power Wash" width={150} height={70} />
+        <img src="logo.webp" alt="Nashoba Power Wash" width={150} height={70} />
       </a>
       <nav aria-label="Main">
         <a href="#house">Services</a>
@@ -31,7 +31,7 @@ function Hero() {
           // Hero video made with Higgsfield. Drop the file at public/video/hero.mp4 (prompt: docs/higgsfield-hero-video.md).
           <video
             className="hero-video"
-            src="/video/hero.mp4"
+            src="video/hero.mp4"
             autoPlay
             muted
             loop
@@ -217,7 +217,7 @@ function Footer() {
   return (
     <footer className="site-footer">
       <div className="wrap footer-inner">
-        <img src="/logo.webp" alt="Nashoba Power Wash" width={140} height={66} loading="lazy" />
+        <img src="logo.webp" alt="Nashoba Power Wash" width={140} height={66} loading="lazy" />
         <p>Power washing in Westford, MA and nearby towns.</p>
         {/* TODO(owner): add phone, email and your Facebook page link when you're ready to publish them. */}
         <p className="muted">© {new Date().getFullYear()} Nashoba Power Wash</p>
