@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { services, type PartId } from '../data/services';
 import { backToHouse, choosePart, hasWebGL, setState, useSite } from '../lib/store';
 import PartPicker from './PartPicker';
+import PartVideo from './PartVideo';
 import ServiceProcess from './ServiceProcess';
 
 const HouseScene = lazy(() => import('./HouseScene'));
@@ -80,6 +81,7 @@ export default function HouseSection() {
             <StaticHouse />
           )}
         </div>
+        <PartVideo />
         {!touched && !selected && (
           <div className="stage-prompt" aria-hidden="true">
             <span className="pulse-dot" /> Pick a part of your home

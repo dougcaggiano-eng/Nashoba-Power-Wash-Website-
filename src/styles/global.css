@@ -972,6 +972,48 @@ p {
   }
 }
 
+/* ---------- Realistic part video (Higgsfield) over the 3D stage ---------- */
+.part-video {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: var(--ink);
+  animation: fadeIn 0.6s ease;
+}
+.part-video video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.part-video.is-hidden {
+  background: transparent;
+  pointer-events: none;
+}
+.part-video.is-hidden video {
+  display: none;
+}
+.part-video-toggle {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  pointer-events: auto;
+  font: 700 0.85rem var(--body);
+  background: rgba(5, 7, 12, 0.8);
+  color: var(--white);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 999px;
+  padding: 9px 14px;
+  cursor: pointer;
+}
+.stage-back {
+  z-index: 3;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+}
+
 /* ---------- Reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
   *,
