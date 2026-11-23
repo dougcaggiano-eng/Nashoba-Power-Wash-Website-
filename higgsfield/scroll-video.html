@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>House Wash Video Test</title>
-<meta name="description" content="Test page: scrolling plays the Higgsfield house wash video forward and backward. Not part of the live site yet.">
+<title>House Tour Video Test</title>
+<meta name="description" content="Test page: scrolling plays the Higgsfield whole-house video forward and backward. Not part of the live site yet.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
@@ -22,7 +22,7 @@
 html,body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased}
 
 /* the video stays pinned while the chapters scroll over it */
-.film{position:relative;height:600vh}
+.film{position:relative;height:880vh} /* intro + six service chapters */
 .stage{position:sticky;top:0;height:100vh;overflow:hidden;background:#0A0F18}
 .stage video,.stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .stage::after{content:"";position:absolute;inset:0;pointer-events:none;
@@ -30,7 +30,7 @@ html,body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-hei
 .progress{position:absolute;left:0;bottom:0;height:3px;width:100%;background:var(--line);z-index:2}
 .progress i{display:block;height:100%;width:0;background:var(--water)}
 
-/* shown until house-wash.mp4 exists */
+/* shown until house-tour.mp4 exists */
 .waiting{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:24px;z-index:1;
   background:radial-gradient(ellipse at 60% 40%,#13213a,#05070B 70%)}
 .waiting[hidden]{display:none}
@@ -63,34 +63,38 @@ html,body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-hei
 </head>
 <body>
 
-<section class="film" id="film" aria-label="House wash, step by step">
+<section class="film" id="film" aria-label="Every service, around the whole house">
   <div class="stage">
-    <img id="poster" src="house-wash-poster.jpg" alt="" hidden>
+    <img id="poster" src="house-tour-poster.jpg" alt="" hidden>
     <video id="vid" muted playsinline preload="auto" aria-hidden="true"></video>
     <div class="waiting" id="waiting"><div>
       <b>Video coming soon</b>
-      <p>This test page plays the Higgsfield house wash video as you scroll. Put the finished file in this folder as <code>house-wash.mp4</code> and reload.</p>
+      <p>This test page plays the Higgsfield whole-house video as you scroll. Put the finished file in this folder as <code>house-tour.mp4</code> and reload.</p>
     </div></div>
     <div class="progress" aria-hidden="true"><i id="bar"></i></div>
   </div>
   <ol class="chapters">
     <li class="chapter intro"><div class="card">
-      <div class="kicker">House wash · vinyl siding</div>
-      <h1>Watch it come clean.</h1>
-      <p class="serif">Scroll down to see each step.</p>
+      <div class="kicker">Power washing · Westford, MA</div>
+      <h1>Mold off. Grime gone.</h1>
+      <p class="serif">Scroll to watch the whole property come clean.</p>
     </div></li>
-    <li class="chapter"><div class="card"><span class="sn">STEP 01</span><h2>Pre-rinse everything</h2>
-      <p>Siding, windows and plants get wet down with plain water first, so the cleaning solution never sits on a dry surface.</p></div></li>
-    <li class="chapter"><div class="card"><span class="sn">STEP 02</span><h2>Foam on, from the ground up</h2>
-      <p>The solution goes on through a foam cannon, bottom to top, so it doesn't leave uneven streaks.</p></div></li>
-    <li class="chapter"><div class="card"><span class="sn">STEP 03</span><h2>Let it work</h2>
-      <p>It sits long enough to kill the mold and loosen the grime instead of just blasting at it.</p></div></li>
-    <li class="chapter"><div class="card"><span class="sn">STEP 04</span><h2>Rinse from the top down</h2>
-      <p>From the roofline down, spraying almost parallel to the siding so everything sheets off clean.</p></div></li>
+    <li class="chapter"><div class="card"><span class="sn">01 / 06</span><h2>House wash</h2>
+      <p>Rinsed first, foamed from the ground up, rinsed from the roofline down. The vinyl siding comes up bright.</p></div></li>
+    <li class="chapter"><div class="card"><span class="sn">02 / 06</span><h2>Patio restored</h2>
+      <p>A surface cleaner evens out the stone, then every joint gets blasted clean.</p></div></li>
+    <li class="chapter"><div class="card"><span class="sn">03 / 06</span><h2>Composite deck</h2>
+      <p>Controlled pressure along the grain. The right amount, and no more.</p></div></li>
+    <li class="chapter"><div class="card"><span class="sn">04 / 06</span><h2>Fence cleaning</h2>
+      <p>The green and grime come off, with a light touch on anything wood.</p></div></li>
+    <li class="chapter"><div class="card"><span class="sn">05 / 06</span><h2>Walkway &amp; stairs</h2>
+      <p>The first thing guests see, and the first thing to go green. Not anymore.</p></div></li>
+    <li class="chapter"><div class="card"><span class="sn">06 / 06</span><h2>Any other surface</h2>
+      <p>Driveways, trim, walls and steps, each with the gentlest method that does the job.</p></div></li>
   </ol>
 </section>
 
-<section class="after"><p>That's the end of the video test. Once it looks right, it moves into the house wash section of the main site.</p></section>
+<section class="after"><p>That's the end of the video test. Once it looks right, it moves into the main site.</p></section>
 
 <script>
 (function(){
@@ -108,9 +112,9 @@ html,body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-hei
   vid.addEventListener('error',function(){ready=false; waiting.hidden=false;});
   // try the lighter phone version on small screens, falling back to the desktop file
   if(small){
-    vid.src='house-wash-mobile.mp4';
-    vid.addEventListener('error',function once(){vid.removeEventListener('error',once); vid.src='house-wash.mp4';});
-  } else vid.src='house-wash.mp4';
+    vid.src='house-tour-mobile.mp4';
+    vid.addEventListener('error',function once(){vid.removeEventListener('error',once); vid.src='house-tour.mp4';});
+  } else vid.src='house-tour.mp4';
 
   function progress(){
     var r=film.getBoundingClientRect(), span=r.height-innerHeight;

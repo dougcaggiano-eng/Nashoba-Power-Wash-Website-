@@ -1,47 +1,71 @@
 # Higgsfield video plan
 
-Two realistic videos made from Doug's own before/after photos. Each plays forward and backward as the visitor scrolls. They are built here first and only moved into the main website once they look right.
+One realistic video of a whole house, like the 3D house on the website, where every service gets done as the camera travels around the property. It plays forward and backward as the visitor scrolls. It's built here first and only moved into the main website once it looks right.
 
-- `scroll-video.html` is the test page. Open it in a browser. Until a video exists it shows a placeholder.
-- `reference/` holds the before and after photos the videos are made from.
-- The finished videos go in this folder (file names are below).
+- `scroll-video.html` is the test page. Open it in a browser. Until the video exists it shows a placeholder.
+- `reference/` holds Doug's before and after photos from real jobs. They set the look (siding, stone, fence, the kind of mold and grime) but are **not** frames in the video.
+- The finished video goes in this folder as `house-tour.mp4`.
 
 ## Status
 
 - [x] Reference photos: house wash and patio, before and after (2026-11-23)
-- [ ] Credits added in Higgsfield (two drafts need 90 credits; the account had 2.2 on 2026-11-23)
+- [ ] Credits added in Higgsfield (the draft needs 90; the account had 2.2 on 2026-11-23)
 - [ ] Photos uploaded to Higgsfield (blocked from this workspace's network on 2026-11-23; see "Uploading" below)
-- [ ] 480p drafts generated: house wash and patio
-- [ ] Drafts approved by Doug
-- [ ] Drafts upgraded to 1080p
-- [ ] Videos converted for smooth scrubbing (see below) and dropped in this folder
+- [ ] 480p draft generated
+- [ ] Draft approved by Doug
+- [ ] Draft upgraded to 1080p
+- [ ] Video converted for smooth scrubbing (see below) and dropped in this folder
 - [ ] Tested in `scroll-video.html`
 - [ ] Moved into the main website
 
-## How the videos are made
+## The shot
 
-Each video is told to **start exactly on the "before" photo and end exactly on the "after" photo**. Higgsfield invents the cleaning in between. Using real photos for both ends keeps the house and patio true to the real job instead of a made-up one.
+**One continuous 30-second take that circles the whole property once, with no cuts.** The house and yard start dirty. Each area is cleaned as the camera reaches it, in the same order as the services on the website, and the video ends on the whole property clean.
 
-Both pairs of photos are tall (3:4), so the videos will be tall too. That fits the main site, where the picture sits beside the text on a computer and fills the screen on a phone.
+| Time | Website service | What happens |
+| ---- | --------------- | ------------ |
+| 0–2s | (opening) | High, wide view of the front of the house. Mold and grime on everything. |
+| 2–7s | 01 House wash | The camera eases toward the front. The technician pre-rinses the siding, foams it from the ground up, then rinses from the roofline down. The cream siding comes up bright. |
+| 7–11.5s | 02 Patio | The camera arcs around the side to the back yard. A round surface cleaner turns the dark, grimy bluestone patio back to light blue-grey and tan, and the joints are rinsed clean. |
+| 11.5–16s | 03 Deck | The camera keeps circling to the composite deck. The boards are cleaned along the grain with controlled pressure, turning from dull and green-tinged to a warm brown. |
+| 16–20.5s | 04 Fence | The camera passes along the back fence. The green and grime come off the weathered wooden stockade fence. |
+| 20.5–25s | 05 Walkway & stairs | The camera comes back around to the front. The front walkway and steps go from green-stained to clean grey concrete. |
+| 25–28.5s | 06 Any other surface | The driveway is cleaned with the surface cleaner, leaving a clean finish. |
+| 28.5–30s | (closing) | The camera rises to the same high view as the opening, with the whole property clean. |
 
-| Video | Starts on | Ends on | File name when finished |
-| ----- | --------- | ------- | ----------------------- |
-| House wash | `reference/house-before.jpg` (mold streaks on the cream siding) | `reference/house-after.jpg` (clean siding) | `house-wash.mp4` |
-| Patio | `reference/patio-before.jpg` (dark, grimy bluestone under leaves) | `reference/patio-after-cropped.jpg` (clean bluestone) | `patio.mp4` |
+The first and last frames are the same view, dirty and then clean. That's the payoff of scrolling.
 
-`patio-after-cropped.jpg` is `patio-after.jpg` with Doug's hand and boots cropped off the bottom. The video must end exactly on this frame, so the crop keeps them out of the last shot.
+**Rules for the footage:**
+- **One continuous camera move.** No cuts or jumps: the page shows any frame as a still whenever the visitor stops scrolling, and plays backward when they scroll up.
+- **Slow and steady.** Constant speed, with gentle easing only at the very start and end. The visitor's scroll sets the pace.
+- **Steady brightness and colour.** Any flicker shows up as shimmer when scrubbing.
+- **Keep the house in the middle of the frame.** Phones crop the sides of a wide video.
+- **No on-screen text, logos or watermarks.** All text is added by the page.
 
-**Rules for both videos:** one continuous take with no cuts, slow steady camera motion and steady brightness. The page shows any frame as a still whenever the visitor stops scrolling, and plays the clip backward when they scroll up.
+## How the photos are used
 
-## Prompts
+All five photos go in as **references**, so the house, materials and dirt look like Doug's real jobs:
 
-### House wash
+| Photo | What it shows Higgsfield |
+| ----- | ------------------------ |
+| `reference/house-after.jpg` | The house style: two stories, cream vinyl lap siding, white trim and windows |
+| `reference/house-before.jpg` | What the mold and grime on the siding look like before the wash |
+| `reference/patio-after-cropped.jpg` | The clean bluestone patio, weathered stockade fence and blue Adirondack chairs |
+| `reference/patio-before.jpg` | The dark, grimy patio under leaves and tree shade |
 
-> Realistic footage of the back corner of a two-story house with cream vinyl lap siding, white trim and white windows, a grey air conditioner on the lawn and a black hammock stand. At the start, green-grey mold streaks run down the siding. One continuous, slow, steady camera move with no cuts and no shake: the camera gently pulls back and tilts up until the full height of the house and the upper gable are in view. A power washing technician in a navy work shirt and dark cap pre-rinses the siding with plain water, sprays white foam on from the ground up, then rinses from the roofline down. The foam and mold sheet off and the siding underneath turns bright and clean. Bright summer daylight, steady exposure, realistic water spray and run-off, minimal motion blur. Everything else in the yard stays where it is. No on-screen text, logos or watermarks.
+`patio-after-cropped.jpg` is `patio-after.jpg` with Doug's hand and boots cropped off the bottom.
 
-### Patio
+There are no photos of a deck, walkway or driveway, so the prompt describes those.
 
-> Realistic footage of a backyard bluestone patio surrounded by a weathered wooden stockade fence, two bright blue Adirondack chairs and a dark wooden storage bench. At the start, the stone is dark and grimy with leaves and dirt across it, in dappled tree shade. One continuous, slow, steady camera move with no cuts and no shake: the camera drifts slowly forward across the patio. A power washing technician in a navy work shirt and dark cap clears the leaves, then runs a round surface cleaner back and forth over the stone, leaving clean, light blue-grey and tan bluestone behind it, then rinses the joints clean. The shade softens into even daylight as it finishes. Steady exposure, realistic water and spray, minimal motion blur. No on-screen text, logos or watermarks.
+**Note:** this house will look like the house in the photos (a two-story New England colonial), not like the single-story 3D house currently on the website. If the video goes into the site, the 3D house could be reshaped to match it.
+
+## Prompt
+
+> Realistic footage of a two-story New England colonial home with cream vinyl lap siding, white trim and white windows, matching the reference photos, on a suburban lot with a lawn and mature trees. In front: a concrete walkway and front steps and a paved driveway. In back: a bluestone patio with blue Adirondack chairs, a composite deck off the back of the house, and a weathered wooden stockade fence around the yard. At the start, everything is dirty, like the before reference photos: green-grey mold streaks on the siding, dark grime and leaves on the patio, green film on the deck, fence, walkway and driveway.
+>
+> One continuous, slow, steady camera move with no cuts and no shake: starting high and wide at the front, the camera makes one full circle around the property and returns to the same high front view. One power washing technician in a navy work shirt and dark cap cleans each area as the camera reaches it: first the front siding (rinse, white foam from the ground up, rinse from the roof down), then, around the back, the bluestone patio with a round surface cleaner, the composite deck along the grain, and the wooden fence; then, back at the front, the walkway and steps, and finally the driveway. Each area turns visibly clean and bright and stays clean. It ends on the whole property clean.
+>
+> Bright, even summer daylight, steady exposure and white balance, realistic water spray and run-off, minimal motion blur. No on-screen text, logos or watermarks.
 
 ## Settings and cost
 
@@ -49,19 +73,21 @@ Both pairs of photos are tall (3:4), so the videos will be tall too. That fits t
 | ------- | ----- |
 | Model | Seedance 2.5 (`seedance_2_5`) |
 | Mode | `omni_reference` |
-| Photos | before photo as `start_image`, after photo as `end_image` |
-| Length | 15 seconds |
-| Shape | `auto` (follows the photos: tall, 3:4) |
+| Photos | all as `image_references` (not as the first or last frame) |
+| Length | 30 seconds (the longest this model makes) |
+| Shape | 16:9 (wide, to match the website; phones crop the sides) |
 | Sound | Off |
-| Draft | `draft: true` makes a 480p preview that can be upgraded to full quality within 7 days without re-rolling |
+| Draft | `draft: true` makes a 480p preview that can be upgraded to full quality within 7 days without re-rolling (`draft_job_id`), so the motion stays the same |
 
-**Draft cost: 45 credits per video, so 90 for both** (quoted 2026-11-23). Full quality was quoted at 240 credits per video for 15 seconds at 1080p. If a draft looks good, it's upgraded from that same draft (`draft_job_id`), so the motion stays the same.
+**Cost (quoted 2026-11-23): draft 90 credits; full quality (1080p) 480 credits.**
+
+**If the draft can't fit everything in one take** (areas skipped, or the dirt coming back), fall back to six shorter clips, one per service. Each clip starts on the last frame of the one before, so they join without a jump. That costs more: six 15-second drafts at 45 credits each is 270 credits, plus the full-quality upgrades.
 
 ## Uploading the photos
 
 On 2026-11-23 this workspace's network blocked Higgsfield's upload server (`upload.higgsfield.ai`). Two ways around it:
 
-1. Higgsfield's upload box: Doug picks the four files from `reference/`.
+1. Higgsfield's upload box: Doug picks the files from `reference/`.
 2. Allow `upload.higgsfield.ai` in this workspace's network settings, then upload from here.
 
 ## After the video is generated
@@ -69,19 +95,19 @@ On 2026-11-23 this workspace's network blocked Higgsfield's upload server (`uplo
 To scrub smoothly, the video needs a keyframe every few frames. A normal export only has one every few seconds, which makes scrolling jump. Convert it like this (desktop version, then a lighter phone version, then the poster):
 
 ```bash
-ffmpeg -i raw.mp4 -an -c:v libx264 -pix_fmt yuv420p -crf 20 -g 8 -sc_threshold 0 -movflags +faststart house-wash.mp4
+ffmpeg -i raw.mp4 -an -c:v libx264 -pix_fmt yuv420p -crf 20 -g 8 -sc_threshold 0 -movflags +faststart house-tour.mp4
 ```
 
 ```bash
-ffmpeg -i raw.mp4 -an -vf "scale=-2:720" -c:v libx264 -pix_fmt yuv420p -crf 23 -g 4 -sc_threshold 0 -movflags +faststart house-wash-mobile.mp4
+ffmpeg -i raw.mp4 -an -vf "scale=-2:720" -c:v libx264 -pix_fmt yuv420p -crf 23 -g 4 -sc_threshold 0 -movflags +faststart house-tour-mobile.mp4
 ```
 
 ```bash
-ffmpeg -i house-wash.mp4 -frames:v 1 -q:v 3 house-wash-poster.jpg
+ffmpeg -i house-tour.mp4 -frames:v 1 -q:v 3 house-tour-poster.jpg
 ```
 
-Do the same for `patio.mp4`. Keep each desktop file under about 30 MB and each phone file under about 15 MB.
+A 30-second video is about twice as big as a 15-second one. Aim for under about 40 MB on desktop and 20 MB on phones, and compress more (raise `-crf`) if it's over.
 
 ## Moving it into the website (later)
 
-Planned approach: the house wash video plays in the house wash section and the patio video in the patio section, in place of the 3D scene there. The clickable 3D house stays as the way to pick a service. We'll decide this once we've seen the videos.
+The video replaces the 3D scene, and each service section scrubs its own part of the video using the time ranges in the table above. When a visitor picks one service (the "Showing Patio" mode), scrolling plays only that service's part: 7–11.5s for the patio. We'll decide how picking works once we've seen the video, since the clickable 3D house would no longer be on screen.
