@@ -55,10 +55,51 @@ header.top{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-ite
 header.top.solid{background:rgba(5,7,11,.78);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
 .brand{display:block;padding:4px}
 .brand img{height:46px;width:auto;mix-blend-mode:lighten}
-nav.links{display:flex;gap:4px;align-items:center;padding:5px;border:1px solid var(--line);border-radius:999px;background:rgba(10,15,24,.55);backdrop-filter:blur(8px)}
-nav.links a{text-decoration:none;font-size:13px;font-weight:500;color:var(--mute);padding:7px 14px;border-radius:999px;transition:color .2s,background .2s}
-nav.links a:hover{color:var(--ink);background:rgba(191,230,255,.07)}
-@media (max-width:860px){nav.links{display:none}}
+/* two header tabs: Services + Locations (jump menus that skip the long scroll) */
+nav.tabs{display:flex;gap:4px;align-items:center;padding:5px;border:1px solid var(--line);border-radius:999px;background:rgba(10,15,24,.6);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.tab{position:relative}
+.tab-btn{display:inline-flex;align-items:center;gap:8px;font:500 14px/1 var(--sans);color:var(--ink);background:transparent;border:0;padding:10px 18px;border-radius:999px;cursor:pointer;transition:background .2s,box-shadow .2s}
+.tab-btn:hover{background:rgba(191,230,255,.08)}
+.tab-btn[aria-expanded=true]{background:rgba(33,120,250,.22);box-shadow:inset 0 0 0 1px rgba(63,169,245,.6)}
+.tab-btn .car{font-size:10px;color:var(--water);transition:transform .2s}
+.tab-btn[aria-expanded=true] .car{transform:rotate(180deg)}
+.menu{position:absolute;top:calc(100% + 14px);left:50%;transform:translateX(-50%);width:340px;padding:12px;border-radius:18px;
+  background:rgba(8,12,20,.97);border:1px solid var(--line);box-shadow:0 24px 60px -12px rgba(0,0,0,.75);z-index:21}
+.menu[hidden]{display:none}
+.menu-h{font:600 11px/1.4 var(--sans);letter-spacing:.18em;text-transform:uppercase;color:var(--mute);margin:4px 8px 10px}
+.menu ul{list-style:none;display:grid;gap:2px}
+.menu-item{width:100%;display:flex;align-items:center;gap:12px;text-align:left;font:500 15px/1.2 var(--sans);color:var(--ink);background:transparent;border:0;border-radius:12px;padding:10px;cursor:pointer;text-decoration:none}
+.menu-item:hover,.menu-item:focus-visible{background:rgba(33,120,250,.16)}
+.menu-item.on{background:rgba(33,120,250,.24);box-shadow:inset 0 0 0 1px rgba(63,169,245,.45)}
+.menu-item .n{font:400 15px/1 var(--display);letter-spacing:.06em;color:var(--water);min-width:22px}
+.menu-item small{display:block;font-size:12.5px;font-weight:400;color:var(--mute);margin-top:3px}
+.menu-towns{grid-template-columns:1fr 1fr}
+.menu-foot{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;padding:12px 4px 2px;border-top:1px solid var(--line)}
+.menu-foot .btn{padding:10px 14px;font-size:13px}
+.btn .short{display:none}
+@media (max-width:860px){
+  header.top{gap:8px}
+  .brand img{height:38px}
+  nav.tabs{padding:3px;backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(10,15,24,.82)} /* a filter here would trap the fixed menu inside the pill */
+  .tab{position:static}
+  .tab-btn{padding:9px 12px;font-size:13.5px}
+  .menu{position:fixed;top:calc(var(--hdr,64px) + 6px);left:16px;right:16px;width:auto;transform:none;max-height:calc(100vh - var(--hdr,64px) - 24px);overflow:auto}
+}
+@media (max-width:440px){
+  .brand img{height:32px}
+  .tab-btn{padding:9px 10px;font-size:13px;gap:6px}
+  .btn .long{display:none}.btn .short{display:inline}
+}
+
+/* "showing one service" chip */
+.focus-chip{position:fixed;z-index:19;top:calc(var(--hdr,76px) + 8px);left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:10px;
+  padding:5px 5px 5px 16px;border-radius:999px;background:rgba(8,12,20,.92);border:1px solid rgba(63,169,245,.5);font:500 13px/1 var(--sans);color:var(--mute);
+  box-shadow:0 12px 30px -10px rgba(0,0,0,.6);white-space:nowrap}
+.focus-chip[hidden]{display:none}
+.focus-chip b{color:#fff;font-weight:600}
+.focus-chip button{font:600 12.5px/1 var(--sans);color:#fff;background:rgba(33,120,250,.3);border:1px solid rgba(63,169,245,.6);border-radius:999px;padding:8px 12px;cursor:pointer}
+.focus-chip button:hover{background:rgba(33,120,250,.5)}
+.svc.hide{display:none}
 
 .btn{display:inline-flex;align-items:center;gap:10px;text-decoration:none;cursor:pointer;font:600 15px/1 var(--sans);letter-spacing:.01em;
   color:#fff;padding:15px 24px;border-radius:999px;border:2px solid var(--black);
@@ -177,6 +218,8 @@ section{position:relative;pointer-events:none}
 .towns{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px;max-width:600px}
 .towns span{font:500 14px/1 var(--sans);padding:10px 14px;border-radius:999px;border:1px solid var(--line);background:rgba(8,12,20,.7)}
 .towns span.home{border-color:var(--water);color:#fff;background:rgba(33,120,250,.2)}
+.towns span.picked{border-color:#fff;color:#fff;background:linear-gradient(180deg,#2D86FF,#0E43B8);box-shadow:0 0 0 3px rgba(63,169,245,.3)}
+.town-yes{margin-top:18px;color:#fff;font-weight:500}
 .faq{max-width:640px;margin-top:28px;display:grid;gap:10px}
 .faq details{border:1px solid var(--line);border-radius:14px;background:rgba(8,12,20,.75);padding:0 22px}
 .faq summary{cursor:pointer;list-style:none;padding:18px 0;font:600 16px/1.35 var(--sans);display:flex;justify-content:space-between;gap:16px}
@@ -215,6 +258,7 @@ footer p{color:var(--mute);font-size:13.5px}
 .rail a{display:flex;align-items:center;gap:12px;justify-content:flex-end;text-decoration:none;font:500 11px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:transparent;transition:color .3s}
 .rail a i{width:8px;height:8px;border-radius:50%;border:1px solid rgba(191,230,255,.5);transition:all .3s}
 .rail a:hover{color:var(--mute)}
+.rail a[hidden]{display:none}
 .rail a.on{color:var(--ink)}
 .rail a.on i{background:var(--water);border-color:var(--water);transform:scale(1.35);box-shadow:0 0 12px var(--water)}
 .counter{position:fixed;left:clamp(20px,4vw,56px);bottom:24px;z-index:6;font:400 15px/1 var(--display);letter-spacing:.12em;color:var(--mute);transition:opacity .4s}
@@ -273,11 +317,27 @@ footer p{color:var(--mute);font-size:13.5px}
 
 <header class="top" id="top">
   <a class="brand" href="#home" aria-label="Nashoba Power Wash, back to top"><img src="{{LOGO}}" alt="Nashoba Power Wash"></a>
-  <nav class="links" aria-label="Main">
-    <a href="#house-wash">Services</a><a href="#about">About</a><a href="#area">Service area</a><a href="#faq">FAQ</a>
+  <nav class="tabs" aria-label="Main">
+    <div class="tab">
+      <button type="button" class="tab-btn" id="tab-services" aria-expanded="false" aria-controls="menu-services">Services <span class="car" aria-hidden="true">▼</span></button>
+      <div class="menu" id="menu-services" hidden>
+        <p class="menu-h">Jump straight to a service</p>
+        <ul id="svcMenu"></ul>
+        <div class="menu-foot"><button type="button" class="btn ghost" data-showall>Show all services</button></div>
+      </div>
+    </div>
+    <div class="tab">
+      <button type="button" class="tab-btn" id="tab-locations" aria-expanded="false" aria-controls="menu-locations">Locations <span class="car" aria-hidden="true">▼</span></button>
+      <div class="menu" id="menu-locations" hidden>
+        <p class="menu-h">Westford &amp; about 20 miles out</p>
+        <ul id="townMenu" class="menu-towns"></ul>
+        <div class="menu-foot"><a class="btn ghost" href="#area" data-close>See the service area</a></div>
+      </div>
+    </div>
   </nav>
-  <a class="btn sm" href="#quote">Free quote</a>
+  <a class="btn sm" href="#quote"><span class="long">Free quote</span><span class="short">Quote</span></a>
 </header>
+<div class="focus-chip" id="focusChip" role="status" hidden><span>Showing <b id="focusName"></b></span><button type="button" data-showall>Show all services</button></div>
 
 <nav class="rail" id="rail" aria-label="Sections"></nav>
 <div class="counter" id="counter" aria-hidden="true"></div>
@@ -292,7 +352,7 @@ footer p{color:var(--mute);font-size:13.5px}
     <p class="lead reveal">Nashoba Power Wash is Doug Caggiano, a local owner-operator who washes houses, restores paver patios and cleans decks and fences around Westford. Mold and grime don't just look bad. Left alone, they wear surfaces down and cost more to fix later.</p>
     <div class="ctas reveal"><a class="btn" href="#quote">Book a free quote</a><a class="btn ghost" href="#pick">Pick a part of your home ↓</a></div>
     <div class="picker panel reveal" id="pick">
-      <p>Pick a part of your home</p>
+      <p>Pick a part of your home, then scroll to see how it's done</p>
       <ul id="partButtons"></ul>
     </div>
   </div></div>
@@ -341,8 +401,10 @@ footer p{color:var(--mute);font-size:13.5px}
     <h2 class="display reveal"><span class="g-white">Westford</span><span class="g-blue" style="display:block">&amp; 20 miles out.</span></h2>
     <p class="lead reveal">Based in Westford and working in the surrounding towns within about 20 miles. Any travel is built into your quote, so there are no surprise fees.</p>
     <div class="towns panel reveal">
-      <span class="home">Westford</span><span>Chelmsford</span><span>Groton</span><span>Acton</span><span>Tewksbury</span><span>Littleton</span><span>Lowell</span><span>Ayer</span><span>Burlington</span><span>Concord</span><span>Carlisle</span><span>…and more nearby</span>
+      <span class="home">Westford</span><span>Chelmsford</span><span>Groton</span><span>Acton</span><span>Tewksbury</span><span>Littleton</span><span>Lowell</span><span>Ayer</span><span>Burlington</span><span>Concord</span><span>Carlisle</span><span class="more">…and more nearby</span>
     </div>
+    <p class="lead town-yes panel" id="townYes" hidden></p>
+    <div class="ctas panel reveal" style="margin-top:26px"><a class="btn" href="#quote">Get your free quote</a></div>
   </div></div>
 </section>
 

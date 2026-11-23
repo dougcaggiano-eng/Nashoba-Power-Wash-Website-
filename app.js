@@ -103,12 +103,20 @@ Object.keys(PARTS).forEach(function(k){
   var l=document.createElement('label'); l.innerHTML='<input type="checkbox" name="parts" value="'+k+'"> '+PARTS[k].label; pc.appendChild(l);
 });
 function pick(part){var c=$('#partChecks input[value="'+part+'"]'); if(c) c.checked=true;}
-function goTo(part){pick(part); var el=document.getElementById(PARTS[part].sec); if(el) window.scrollTo({top:el.offsetTop-10,behavior:RM?'auto':'smooth'}); hidePrompt();}
-document.addEventListener('click',function(e){
-  var g=e.target.closest('[data-goto]'); if(g){goTo(g.getAttribute('data-goto'));return;}
-  var p=e.target.closest('[data-pick]'); if(p){pick(p.getAttribute('data-pick'));}
-  if(e.target.closest('.back')){window.scrollTo({top:$('#home').offsetTop,behavior:RM?'auto':'smooth'});}
-});
+
+/* header menus: Services + Locations */
+var svcMenu=$('#svcMenu'), townMenu=$('#townMenu');
+SERVICES.forEach(function(s,i){var li=document.createElement('li');
+  li.innerHTML='<button type="button" class="menu-item" data-svc="'+s.part+'"><span class="n">'+('0'+(i+1)).slice(-2)+'</span><span>'+esc(s.short)+'<small>'+esc(s.sub)+'</small></span></button>';
+  svcMenu.appendChild(li);});
+$$('.towns span:not(.more)').forEach(function(sp){var t=sp.textContent, li=document.createElement('li');
+  li.innerHTML='<button type="button" class="menu-item" data-town="'+esc(t)+'"><span>'+esc(t)+(sp.classList.contains('home')?'<small>Home base</small>':'')+'</span></button>';
+  townMenu.appendChild(li);});
+var tabBtns=$$('.tab-btn');
+function menuOf(b){return document.getElementById(b.getAttribute('aria-controls'));}
+function closeMenus(except){tabBtns.forEach(function(b){if(b===except)return; b.setAttribute('aria-expanded','false'); menuOf(b).hidden=true;});}
+function toggleMenu(b){var open=b.getAttribute('aria-expanded')!=='true'; closeMenus(b); b.setAttribute('aria-expanded',String(open)); menuOf(b).hidden=!open;}
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){var o=tabBtns.filter(function(b){return b.getAttribute('aria-expanded')==='true'})[0]; closeMenus(); if(o) o.focus();}});
 
 /* before/after sliders */
 $$('.ba').forEach(function(b){var r=$('input',b); var f=function(){b.style.setProperty('--pos',r.value+'%')}; r.addEventListener('input',f); f();});
@@ -132,6 +140,55 @@ var sections=$$('main section'), rail=$('#rail');
 sections.forEach(function(s){var a=document.createElement('a'); a.href='#'+s.id; a.innerHTML=s.getAttribute('data-name')+'<i></i>'; rail.appendChild(a);});
 var railLinks=$$('a',rail), counter=$('#counter'), header=$('#top'), hint=$('#hint'), tapPrompt=$('#tapPrompt');
 var promptHidden=false; function hidePrompt(){if(!promptHidden){promptHidden=true; tapPrompt.classList.add('off');}}
+function setHdr(){document.documentElement.style.setProperty('--hdr',header.offsetHeight+'px');}
+addEventListener('resize',setHdr); setHdr();
+
+/* ---------------- navigation: glide when close, jump instantly when far ---------------- */
+function go(el,instant){
+  if(!el) return;
+  var y=Math.max(0,el.getBoundingClientRect().top+pageYOffset-10);
+  if(instant||RM||Math.abs(y-pageYOffset)>innerHeight*2.5){
+    var h=document.documentElement, pv=h.style.scrollBehavior; h.style.scrollBehavior='auto';
+    window.scrollTo(0,y); h.style.scrollBehavior=pv; readScroll();
+  } else window.scrollTo({top:y,behavior:'smooth'});
+}
+
+/* ---------------- choose a service: show only that one ---------------- */
+var focused=null, chip=$('#focusChip'), svcSecs=SERVICES.map(function(s){return document.getElementById(s.id)});
+function setFocus(part){
+  focused=part||null;
+  SERVICES.forEach(function(s,i){svcSecs[i].classList.toggle('hide',!!focused && s.part!==focused);});
+  railLinks.forEach(function(a,i){a.hidden=sections[i].classList.contains('hide');});
+  $$('[data-svc]',svcMenu).forEach(function(b){b.classList.toggle('on',b.getAttribute('data-svc')===focused);});
+  chip.hidden=!focused; if(focused) $('#focusName').textContent=SERVICES[PARTS[focused].idx].short;
+  readScroll();
+}
+// picked on the 3D house or the hero buttons: glide down into that service
+function goTo(part){pick(part); setFocus(part); go(document.getElementById(PARTS[part].sec)); hidePrompt();}
+// picked from the Services tab: skip straight there
+function focusOn(part){pick(part); setFocus(part); go(document.getElementById(PARTS[part].sec),true); hidePrompt();}
+function showAll(){var cur=focused&&document.getElementById(PARTS[focused].sec); setFocus(null); if(cur) go(cur,true);}
+function pickTown(t){
+  $$('.towns span').forEach(function(sp){sp.classList.toggle('picked',sp.textContent===t);});
+  var sel=$('#qform select[name=town]'), has=$$('option',sel).some(function(o){return o.textContent===t;});
+  sel.value=has?t:'Other (nearby)';
+  var yes=$('#townYes'); yes.hidden=false;
+  yes.textContent=t==='Westford'?'Westford is home base. You\'re right next door.':'Yes, I work in '+t+'. Travel is built into your quote, so there are no surprise fees.';
+  go($('#area'),true); hidePrompt();
+}
+
+document.addEventListener('click',function(e){
+  var tb=e.target.closest('.tab-btn'); if(tb){toggleMenu(tb);return;}
+  if(!e.target.closest('.menu')||e.target.closest('[data-close]')) closeMenus();
+  var sv=e.target.closest('[data-svc]'); if(sv){closeMenus(); focusOn(sv.getAttribute('data-svc')); return;}
+  var tw=e.target.closest('[data-town]'); if(tw){closeMenus(); pickTown(tw.getAttribute('data-town')); return;}
+  if(e.target.closest('[data-showall]')){closeMenus(); showAll(); return;}
+  var g=e.target.closest('[data-goto]'); if(g){goTo(g.getAttribute('data-goto'));return;}
+  var p=e.target.closest('[data-pick]'); if(p){pick(p.getAttribute('data-pick'));}
+  if(e.target.closest('.back')){go($('#home'));return;}
+  var a=e.target.closest('a[href^="#"]'), id=a&&a.getAttribute('href').slice(1);
+  if(id){var t=document.getElementById(id); if(t){e.preventDefault(); go(t);}}
+});
 
 /* ---------------- scroll state ---------------- */
 var state={view:'hero', part:null, fx:null, clean:{}, sand:0};
@@ -151,6 +208,8 @@ function readScroll(){
   state.fx=null;
   SERVICES.forEach(function(s){
     var sec=document.getElementById(s.id), steps=$$('.step',sec);
+    // services that aren't picked stay dirty on the house
+    if(sec.classList.contains('hide')){state.clean[s.part]=0; if(s.part==='patio') state.sand=0; return;}
     var a=steps[0].getBoundingClientRect().top - vh*0.7, b=steps[steps.length-1].getBoundingClientRect().bottom - vh*0.45;
     var p = a>0 ? 0 : (b<=0 ? 1 : (-a)/((-a)+b));
     state.clean[s.part]=Math.max(0,Math.min(1,p));
