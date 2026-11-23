@@ -138,6 +138,7 @@ if('IntersectionObserver' in window){
 /* rail */
 var sections=$$('main section'), rail=$('#rail');
 sections.forEach(function(s){var a=document.createElement('a'); a.href='#'+s.id; a.innerHTML=s.getAttribute('data-name')+'<i></i>'; rail.appendChild(a);});
+var orbitUI=$('#orbit');
 var railLinks=$$('a',rail), counter=$('#counter'), header=$('#top'), hint=$('#hint'), tapPrompt=$('#tapPrompt');
 var promptHidden=false; function hidePrompt(){if(!promptHidden){promptHidden=true; tapPrompt.classList.add('off');}}
 function setHdr(){document.documentElement.style.setProperty('--hdr',header.offsetHeight+'px');}
@@ -203,6 +204,8 @@ function readScroll(){
   counter.innerHTML = si>=0 ? '<b>'+('0'+(si+1)).slice(-2)+'</b> / '+('0'+SERVICES.length).slice(-2)+' &nbsp;'+SERVICES[si].short.toUpperCase() : '';
   header.classList.toggle('solid',scrollY>40);
   hint.classList.toggle('off',scrollY>60);
+  // camera controls only while looking at the whole house (on phones, only before the hero text scrolls over)
+  orbitUI.classList.toggle('off',state.view!=='hero'||(innerWidth<900&&scrollY>40));
   if(scrollY>vh*0.6) hidePrompt();
   // per-service clean progress
   state.fx=null;
@@ -291,13 +294,18 @@ function winTex(n){if(WIN[n])return WIN[n];WIN[n]=canvasTex(512,512,function(x,w
   if(n<=2)x.fillRect(0,h*.62,w,8);});return WIN[n];}
 
 /* ---------- grime-aware PBR material ---------- */
-var GH=['uniform float uClean,uGrime,uWipe,uTop,uHover,uSel,uTime,uSand,uJoint,uRib,uDirt;uniform vec3 uRibAxis;varying vec3 vGW;varying vec3 vGN;',
+var GH=['uniform float uClean,uGrime,uWipe,uTop,uHover,uSel,uTime,uSand,uJoint,uRib,uDirt,uLap;uniform vec3 uRibAxis;varying vec3 vGW;varying vec3 vGN;',
 'float gH(vec3 p){p=fract(p*.3183099+.1);p*=17.;return fract(p.x*p.y*p.z*(p.x+p.y+p.z));}',
 'float gN(vec3 x){vec3 i=floor(x),f=fract(x);f=f*f*(3.-2.*f);return mix(mix(mix(gH(i),gH(i+vec3(1,0,0)),f.x),mix(gH(i+vec3(0,1,0)),gH(i+vec3(1,1,0)),f.x),f.y),mix(mix(gH(i+vec3(0,0,1)),gH(i+vec3(1,0,1)),f.x),mix(gH(i+vec3(0,1,1)),gH(i+vec3(1,1,1)),f.x),f.y),f.z);}',
 'float gF(vec3 p){float a=.5,s=0.;for(int i=0;i<4;i++){s+=a*gN(p);p*=2.03;a*=.5;}return s;}',''].join('\n');
 var GMAP=[
 'float gA=0.,wet=0.;{',
 ' if(uRib>.5){float rb=fract(dot(vGW,uRibAxis)/.19);diffuseColor.rgb*=.72+.28*smoothstep(0.,.3,rb)*smoothstep(1.,.62,rb);}',
+// vinyl lap siding in world space: 18cm boards, shadow under each overlap, dark butt edge, faint embossed grain
+' if(uLap>.5){float lf=fract(vGW.y/.18);float vt=1.-abs(vGN.y);',
+'  float ls=(1.035-.07*lf)*(1.-.24*smoothstep(.8,1.,lf))*mix(.62,1.,smoothstep(0.,.045,lf));',
+'  ls*=.975+.05*gN(vec3(vGW.x*2.5+vGW.z*2.5,vGW.y*55.,0.));',
+'  diffuseColor.rgb*=mix(1.,ls,vt);}',
 ' float g=gF(vGW*1.1+3.);',
 ' float hb=(1.-smoothstep(0.,2.6,vGW.y))*.3*(1.-abs(vGN.y));',
 ' float jn=uJoint*(1.-smoothstep(.06,.14,dot(diffuseColor.rgb,vec3(.333))));',
@@ -322,7 +330,7 @@ function PM(o){
     map:o.map||null,bumpMap:o.bump||null,bumpScale:o.bumpScale||.02,emissive:o.emMap?new THREE.Color(1,1,1):new THREE.Color(0),emissiveMap:o.emMap||null,emissiveIntensity:o.emk||1,
     envMapIntensity:o.env!=null?o.env:1,side:o.side||THREE.FrontSide});
   var u={uClean:{value:0},uGrime:{value:o.grime?1:0},uWipe:{value:o.wipe||0},uTop:{value:o.top||3.2},uHover:{value:0},uSel:{value:0},uTime:{value:0},uSand:{value:0},
-    uJoint:{value:o.joint?1:0},uRib:{value:o.rib?1:0},uDirt:{value:o.dirt||0},uRibAxis:{value:new THREE.Vector3().fromArray(o.ribAxis||[1,0,0])}};
+    uJoint:{value:o.joint?1:0},uRib:{value:o.rib?1:0},uLap:{value:o.lap?1:0},uDirt:{value:o.dirt||0},uRibAxis:{value:new THREE.Vector3().fromArray(o.ribAxis||[1,0,0])}};
   m.userData.u=u; if(o.part) m.userData.part=o.part;
   m.onBeforeCompile=function(sh){for(var k in u) sh.uniforms[k]=u[k];
     sh.vertexShader='varying vec3 vGW;varying vec3 vGN;\n'+sh.vertexShader.replace('#include <project_vertex>','#include <project_vertex>\nvGW=(modelMatrix*vec4(transformed,1.)).xyz;vGN=normalize((modelMatrix*vec4(objectNormal,0.)).xyz);');
@@ -355,8 +363,9 @@ scene.add(new THREE.HemisphereLight(0xb9d1ee,0x4d4232,.35));
 var porchL=new THREE.PointLight(0xffc27a,1.1,8,2);porchL.position.set(-.8,2.85,3.35);scene.add(porchL);
 
 /* ---------- materials ---------- */
-var mWall  =PM({color:0xc9c5be,map:rep(T.stucco,2,1),bump:rep(T.stuccoB,3,2),bumpScale:.012,rough:.93,part:'siding',grime:1,wipe:1,top:3.2});
-var mWallG =PM({color:0xc9c5be,map:rep(T.stucco,2,1),bump:rep(T.stuccoB,3,2),bumpScale:.012,rough:.93,part:'siding',grime:1,wipe:1,top:2.9});
+// vinyl siding (boards drawn in the shader so they line up on every wall)
+var mWall  =PM({color:0xd3d0c8,rough:.6,lap:1,part:'siding',grime:1,wipe:1,top:3.2});
+var mWallG =PM({color:0xd3d0c8,rough:.6,lap:1,part:'siding',grime:1,wipe:1,top:2.9});
 var mGlass =PM({color:0x08090b,emMap:winTex(4),emk:1.25,rough:.06,env:1.3,part:'siding'});
 var mGlass2=PM({color:0x08090b,emMap:winTex(2),emk:1.25,rough:.06,env:1.3,part:'siding'});
 var mGlass5=PM({color:0x08090b,emMap:winTex(5),emk:1.25,rough:.06,env:1.3,part:'siding'});
@@ -704,7 +713,7 @@ function updateWorker(dt,t){
   worker.update(dt,t,{active:true,part:part||'idle',fx:cfg?state.fx:null,target:tgtV,off:offV,floorY:wk.floor,machine:macV});
   weeds.scale.setScalar(Math.max(.001,1-Math.min(1,Math.max(0,(state.clean.patio-.42)/.18))));
 }
-var emitAcc=0, cursor=0, tmpV=new THREE.Vector3(), camTarget=new THREE.Vector3();
+var emitAcc=0, cursor=0, tmpV=new THREE.Vector3(), camTarget=new THREE.Vector3(), backV=new THREE.Vector3();
 function emit(dt,t){
   var fx=FX[state.fx], cfg=state.part&&SPRAY[state.part];
   if(RM||!fx||!cfg){emitAcc=0;return;}
@@ -748,7 +757,18 @@ var VIEWS={
 var curT=new THREE.Vector3().fromArray(VIEWS.hero.t);
 var wantP=new THREE.Vector3(), wantT=new THREE.Vector3();
 var curS=new THREE.Spherical().setFromVector3(new THREE.Vector3().fromArray(VIEWS.hero.p).sub(curT)), wantS=new THREE.Spherical(), sphV=new THREE.Vector3();
-var yaw=0, yawTarget=0, mx=0, my=0;
+var yaw=0, mx=0, my=0;
+/* free orbit: visitors spin / tilt / zoom the camera around the house; it eases back whenever the view changes */
+var orb={yaw:0,pitch:0,zoom:1}, orbT={yaw:0,pitch:0,zoom:1}, orbView='hero';
+function clampZ(z){return Math.max(.6,Math.min(1.7,z));}
+function wrapA(a){return Math.atan2(Math.sin(a),Math.cos(a));}
+function orbReset(){orb.yaw=wrapA(orb.yaw); orbT.yaw=0; orbT.pitch=0; orbT.zoom=1;}
+orbitUI.addEventListener('click',function(e){var b=e.target.closest('[data-orb]'); if(!b) return; var a=b.getAttribute('data-orb');
+  if(a==='left') orbT.yaw-=Math.PI/4; else if(a==='right') orbT.yaw+=Math.PI/4;
+  else if(a==='in') orbT.zoom=clampZ(orbT.zoom/1.2); else if(a==='out') orbT.zoom=clampZ(orbT.zoom*1.2);
+  else if(a==='back'){orbT.yaw=Math.round((orbT.yaw-Math.PI)/(2*Math.PI))*2*Math.PI+Math.PI; orbT.pitch=.3;}
+  else orbReset();
+  hidePrompt();});
 
 function resize(){var w=innerWidth,h=innerHeight; renderer.setSize(w,h,false); camera.aspect=w/h;
   if(w>=900) camera.setViewOffset(w,h,-w*0.22,0,w,h); else camera.setViewOffset(w,h,0,h*0.17,w,h);
@@ -768,9 +788,15 @@ function pickAt(x,y){
   return hit?hit.object.userData.part:null;}
 addEventListener('pointermove',function(e){mx=(e.clientX/innerWidth-.5);my=(e.clientY/innerHeight-.5);
   pointer.x=e.clientX;pointer.y=e.clientY;pointer.inside=!overUI(e.target);
-  if(drag){var dx=e.clientX-drag.x; yawTarget=Math.max(-.6,Math.min(.6,drag.y0+dx*-0.004)); if(Math.abs(dx)>6) drag.moved=true;}
+  if(drag){var dx=e.clientX-drag.x, dy=e.clientY-drag.y;
+    orbT.yaw=drag.yaw0-dx*0.006; orbT.pitch=Math.max(-.45,Math.min(.5,drag.p0+dy*0.004));
+    if(Math.abs(dx)+Math.abs(dy)>6){drag.moved=true; hidePrompt();}}
 },{passive:true});
-canvas.addEventListener('pointerdown',function(e){drag={x:e.clientX,y0:yawTarget,moved:false};canvas.classList.add('drag');});
+canvas.addEventListener('pointerdown',function(e){drag={x:e.clientX,y:e.clientY,yaw0:orbT.yaw,p0:orbT.pitch,moved:false};canvas.classList.add('drag');});
+// phones: a vertical swipe becomes a page scroll, which cancels the drag
+addEventListener('pointercancel',function(){drag=null; canvas.classList.remove('drag');});
+// trackpad pinch (ctrl/cmd + wheel) zooms; a plain wheel still scrolls the page
+canvas.addEventListener('wheel',function(e){if(!e.ctrlKey&&!e.metaKey) return; e.preventDefault(); orbT.zoom=clampZ(orbT.zoom*Math.exp(e.deltaY*0.01));},{passive:false});
 addEventListener('pointerup',function(e){
   var wasDrag=drag&&drag.moved; drag=null; canvas.classList.remove('drag');
   if(wasDrag||e.target!==canvas) return;
@@ -793,9 +819,16 @@ function frame(now){
   curS.theta+=dTh*a; curS.phi+=(wantS.phi-curS.phi)*a; curS.radius+=(wantS.radius-curS.radius)*a;
   // swell the radius mid-swing so long moves clear the roofline
   var swing=Math.min(1,Math.abs(dTh)/1.2);
-  yaw+= (yawTarget+(RM?0:mx*.08)-yaw)*damp(.05,dt);
-  sphV.setFromSphericalCoords(curS.radius*(1+swing*.25), Math.max(.35,curS.phi-swing*.2), curS.theta+yaw);
-  camera.position.set(curT.x+sphV.x, curT.y+sphV.y+(RM?0:-my*.6), curT.z+sphV.z); camTarget.copy(curT); camera.lookAt(curT);
+  yaw+= ((RM||drag?0:mx*.08)-yaw)*damp(.05,dt);
+  if(state.view!==orbView){orbView=state.view; orbReset();}
+  var ko=damp(.004,dt); orb.yaw+=(orbT.yaw-orb.yaw)*ko; orb.pitch+=(orbT.pitch-orb.pitch)*ko; orb.zoom+=(orbT.zoom-orb.zoom)*ko;
+  // rise up as the camera swings away from the front, so it looks over the trees and fence into the yard
+  var lift=Math.min(1,Math.abs(wrapA(orb.yaw))/0.9)*.32;
+  sphV.setFromSphericalCoords(curS.radius*(1+swing*.25)*orb.zoom, Math.max(.3,Math.min(1.5,curS.phi-swing*.2-orb.pitch-lift)), curS.theta+yaw+orb.yaw);
+  // facing the back of the house from the overview, aim into the yard (patio, deck, fence) instead of the roof
+  var back=state.view==='hero'?Math.max(0,-Math.cos(orb.yaw)):0;
+  camTarget.copy(curT).add(backV.set(2.5*back,-1.4*back,-7.5*back));
+  camera.position.set(camTarget.x+sphV.x, camTarget.y+sphV.y+(RM?0:-my*.6), camTarget.z+sphV.z); camera.lookAt(camTarget);
 
   // hover
   var hp = pointer.inside && !drag ? pickAt(pointer.x,pointer.y) : null;
