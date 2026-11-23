@@ -163,6 +163,81 @@ function readScroll(){
 addEventListener('scroll',readScroll,{passive:true}); addEventListener('resize',readScroll);
 readScroll();
 
+/* ---------------- scroll film: the dirty → clean video, scrubbed by scroll ---------------- */
+(function(){
+  var film=$('#watch'); if(!film) return;
+  var vid=$('#filmVideo'), media=$('#filmMedia'), caps=$('#filmCaps'), track=$('#filmTrack'), badge=$('#filmBadge');
+  // [service id, start s, end s] in video order; the clean reveal runs from the last end to the video's end
+  var BEATS=[['house-wash',0,5],['walkway',5,9.97],['deck',9.97,14.93],['patio',14.93,19.9],['fence',19.9,24.9]];
+  var CLEAN_AT=24.9, HOLD_IN=.07, HOLD_OUT=.1, dur=29.43;
+  var two=function(n){return ('0'+n).slice(-2)};
+  var outro=$('[data-cap=outro]',caps);
+  BEATS.forEach(function(b,i){
+    var s=SERVICES.filter(function(x){return x.id===b[0]})[0]; b.push(s);
+    var d=document.createElement('div'); d.className='cap'; d.setAttribute('data-cap',s.id);
+    d.innerHTML='<span class="num"><b>'+two(i+1)+'</b> / '+two(BEATS.length)+'</span><div class="kicker">'+esc(s.sub)+'</div>'+
+      '<h3 class="display"><span class="g-white">'+s.title[0]+'</span><span class="g-blue">'+s.title[1]+'</span></h3>'+
+      '<p class="serif">'+esc(s.line)+'</p>'+
+      '<div class="meta"><span><em>'+s.meta[0][0]+'</em>'+s.meta[0][1]+'</span></div>'+
+      '<button class="go" type="button" data-goto="'+s.part+'">See how it\'s done →</button>';
+    caps.insertBefore(d,outro);
+    var t=document.createElement('div'); t.innerHTML='<span>'+esc(s.short)+'</span><i><b></b></i>'; track.appendChild(t);
+  });
+  var capEls=$$('.cap',caps), ticks=$$('div',track), fills=$$('b',track), ems=$$('em',badge);
+
+  // load the right size only when the film is close, so it doesn't slow the first paint.
+  // The file streams in straight away, and a full copy is pulled into memory in the background:
+  // scrubbing from memory is instant and works on any host (even ones without byte-range support).
+  var loaded=false, swapping=false, unlocked=false, still=$('img',media);
+  function load(){ if(loaded) return; loaded=true;
+    var url = innerWidth<=900 ? vid.getAttribute('data-src-sm') : vid.getAttribute('data-src-lg');
+    vid.src=url; vid.load();
+    if(window.fetch && window.URL && location.protocol!=='file:'){
+      fetch(url).then(function(r){if(!r.ok) throw 0; return r.blob()}).then(function(bl){
+        // hold the frame on screen as a still while the in-memory copy takes over, so nothing flashes
+        try{var c=document.createElement('canvas'); c.width=vid.videoWidth; c.height=vid.videoHeight; c.getContext('2d').drawImage(vid,0,0); still.src=c.toDataURL('image/jpeg',.85);}catch(e){}
+        swapping=true; media.classList.remove('ready'); vid.removeAttribute('poster');
+        vid.src=URL.createObjectURL(bl); vid.load();
+      }).catch(function(){});
+    }
+  }
+  vid.addEventListener('loadedmetadata',function(){ if(isFinite(vid.duration)&&vid.duration>0) dur=vid.duration;
+    // iOS only paints a frame after play(): start and stop straight away (muted, so it's allowed)
+    if(!unlocked){ unlocked=true; var p=vid.play(); if(p&&p.then) p.then(function(){vid.pause()}).catch(function(){}); else vid.pause(); } });
+  vid.addEventListener('loadeddata',function(){ if(!swapping || cur<0.05){ swapping=false; media.classList.add('ready'); } });
+  vid.addEventListener('seeked',function(){ if(swapping && Math.abs(vid.currentTime-cur)<0.25){ swapping=false; media.classList.add('ready'); } });
+
+  var live=false, cur=0, phase='';
+  if('IntersectionObserver' in window){
+    new IntersectionObserver(function(es){es.forEach(function(en){ if(en.isIntersecting){load(); if(!live){live=true; requestAnimationFrame(tick);}} else live=false; })},{rootMargin:'150% 0px 150% 0px'}).observe(film);
+  } else { load(); live=true; requestAnimationFrame(tick); }
+
+  function clamp(v){return v<0?0:v>1?1:v}
+  function tick(){
+    var vh=innerHeight, r=film.getBoundingClientRect();
+    var p=clamp(-r.top/Math.max(1,r.height-vh));
+    var target=clamp((p-HOLD_IN)/(1-HOLD_IN-HOLD_OUT))*(dur-0.05);
+    cur += (target-cur)*(RM?1:0.16);
+    if(Math.abs(target-cur)<0.004) cur=target;
+    if(vid.readyState>=1 && !vid.seeking && Math.abs(vid.currentTime-cur)>0.02){ try{vid.currentTime=cur;}catch(e){} }
+
+    // which caption: intro → five services → clean reveal
+    var ph = p<HOLD_IN ? 'intro' : (cur>=CLEAN_AT+0.8 ? 'outro' : null), bi=-1;
+    if(!ph){ for(var i=0;i<BEATS.length;i++){ if(cur<BEATS[i][2]||i===BEATS.length-1){bi=i;break;} } ph=BEATS[bi][0]; }
+    if(ph!==phase){ phase=ph; capEls.forEach(function(c){c.classList.toggle('on',c.getAttribute('data-cap')===ph)}); }
+    BEATS.forEach(function(b,i){ var f=clamp((cur-b[1])/(b[2]-b[1])); fills[i].style.width=(f*100)+'%';
+      ticks[i].classList.toggle('on',i===bi); ticks[i].classList.toggle('done',f>=1); });
+    track.classList.toggle('off',ph==='intro');
+    var bp=clamp(cur/CLEAN_AT); badge.style.setProperty('--p',bp); ems[0].classList.toggle('on',bp<.02); ems[1].classList.toggle('on',bp>=1);
+
+    // keep the shared counter + 3D stage in step with the film
+    var inView = r.top<vh*0.5 && r.bottom>vh*0.5;
+    if(inView && bi>=0) counter.innerHTML='<b>'+two(bi+1)+'</b> / '+two(BEATS.length)+' &nbsp;'+BEATS[bi][3].short.toUpperCase();
+    state.covered = r.top<=1 && r.bottom>=vh-1;   // the film fills the screen, so the 3D house can rest
+    if(live) requestAnimationFrame(tick); else state.covered=false;
+  }
+})();
+
 /* ---------------- 3D ---------------- */
 var loader=$('#loader'); function done(){loader.classList.add('done')}
 setTimeout(done,2500);
@@ -752,7 +827,7 @@ function frame(now){
       u.uSel.value+=((state.part===p?1:0)-u.uSel.value)*damp(.01,dt);
       if(p==='patio') u.uSand.value+=(state.sand-u.uSand.value)*ka;}});
   updateWorker(dt,t); emit(dt,t); stepParticles(dt);
-  renderer.render(scene,camera);
+  if(!state.covered||first) renderer.render(scene,camera);
   if(first){first=false; setTimeout(done,250);}
   requestAnimationFrame(frame);
 }
