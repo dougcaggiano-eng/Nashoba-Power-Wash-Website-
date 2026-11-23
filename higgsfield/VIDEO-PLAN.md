@@ -9,14 +9,35 @@ One realistic video of a whole house, like the 3D house on the website, where ev
 ## Status
 
 - [x] Reference photos: house wash and patio, before and after (2026-11-23)
-- [ ] Credits added in Higgsfield (the draft needs 90; the account had 2.2 on 2026-11-23)
-- [ ] Photos uploaded to Higgsfield (blocked from this workspace's network on 2026-11-23; see "Uploading" below)
-- [ ] 480p draft generated
-- [ ] Draft approved by Doug
-- [ ] Draft upgraded to 1080p
-- [ ] Video converted for smooth scrubbing (see below) and dropped in this folder
-- [ ] Tested in `scroll-video.html`
+- [x] Credits added (Starter plan)
+- [x] Photos uploaded to Higgsfield by Doug
+- [x] First version generated (2026-11-23), see "What was actually made" below
+- [x] Converted for smooth scrubbing: `house-tour.mp4` (12 MB), `house-tour-mobile.mp4` (5.7 MB), plus posters
+- [x] Tested in `scroll-video.html`: each chapter scrubs its own shot, with a fade at the cuts
+- [ ] Approved by Doug
 - [ ] Moved into the main website
+
+## What was actually made (2026-11-23)
+
+Seedance 2.5, the model planned below, needs a Higgsfield **Plus** plan, and the account is on **Starter**. So this first version uses **MiniMax H3 Max**: 15 seconds at 768p (1344×768), 16:9, 37.5 credits, with the four photos as references. Higgsfield job: `f866b11f-a78b-4d9e-a8b0-8a964a8c8a29`.
+
+The model **ignored "no cuts"** and made four shots. The test page turns that into a strength: each service chapter scrubs only its own shot, and the video fades out and back in at the three cuts, so there is never a jump mid-scroll.
+
+| Shot | Video time | Chapters on the page |
+| ---- | ---------- | -------------------- |
+| Siding wash on the side of the house | 0–3.5s | intro, 01 House wash |
+| Patio from above, surface cleaner | 3.5–7.0s | 02 Patio |
+| Deck and fence | 7.0–11.7s | 03 Deck, 04 Fence |
+| Back at the house, walkway and driveway | 11.7–15.1s | 05 Walkway & stairs, 06 Any other surface |
+
+**Known weaknesses:**
+- The siding is only lightly dirty at the start, so the house wash shows less of a before-and-after than the patio does.
+- The deck and fence share one shot.
+- The walkway and driveway are barely cleaned on screen.
+
+The patio photos were uploaded with a phone rotation tag (they're stored sideways). If the patio ever comes out wrong, re-upload upright copies.
+
+The workspace network now allows Higgsfield's servers (`upload.higgsfield.ai`, `d2ol7oe51mr4n9.cloudfront.net`, `d8j0ntlcm91z4.cloudfront.net`), so future videos can be uploaded and downloaded from here.
 
 ## The shot
 
